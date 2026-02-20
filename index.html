@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive TFC - RDC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <nav class="bg-blue-800 text-white p-4 shadow-lg text-center md:text-left">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-xl font-bold">🎓 Archive TFC-RDC</h1>
+            <a href="publier.html" class="bg-green-500 hover:bg-green-600 px-6 py-2 rounded-lg text-sm font-semibold transition duration-300 shadow-md">
+                + Publier un Travail
+            </a>
+        </div>
+    </nav>
+
+    <header class="py-10 bg-white border-b shadow-sm">
+        <div class="container mx-auto text-center px-4">
+            <h2 class="text-3xl font-extrabold text-gray-800">Bibliothèque Numérique des TFC</h2>
+            <p class="text-gray-600 mt-2">Université de Malemba Nkulu & RDC</p>
+            
+            <div class="mt-8 max-w-xl mx-auto">
+                <input type="text" placeholder="Rechercher par titre, auteur ou année..." 
+                       class="w-full p-4 border border-gray-300 rounded-full shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-10 px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-2xl font-bold text-gray-700">Dernières Publications</h3>
+            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full uppercase">Nouveau</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl transition duration-300">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase">Licence</span>
+                    <span class="text-gray-400 text-xs">2023-2024</span>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900 leading-tight">Optimisation des réseaux VSAT en milieu rural : Cas de Malemba Nkulu</h4>
+                <p class="text-sm text-gray-600 mt-3 font-medium">Auteur : Fortune Mukumbi</p>
+                <p class="text-xs text-gray-400 mt-1 italic">Université de Malemba Nkulu</p>
+                
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <button class="w-full bg-gray-50 text-blue-700 font-bold py-2 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300">
+                        Lire le document PDF
+                    </button>
+                </div>
+            </div>
+
+            </div>
+    </main>
+
+    <footer class="mt-20 py-10 bg-gray-900 text-white text-center">
+        <p class="text-sm opacity-75">© 2026 - Plateforme Académique Digitale</p>
+        <p class="text-xs mt-2 text-blue-400 font-medium italic">République Démocratique du Congo</p>
+    </footer>
+
+</body>
+</html>
