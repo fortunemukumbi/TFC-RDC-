@@ -3,63 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive TFC - RDC</title>
+    <title>Bibliothèque UNIMALEMBA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .card-item { transition: all 0.3s ease; }
+        .card-item:hover { transform: translateY(-5px); }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 font-sans min-h-screen">
 
-    <nav class="bg-blue-800 text-white p-4 shadow-lg text-center md:text-left">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <h1 class="text-xl font-bold">🎓 Archive TFC-RDC</h1>
-            <a href="publier.html" class="bg-green-500 hover:bg-green-600 px-6 py-2 rounded-lg text-sm font-semibold transition duration-300 shadow-md">
-                + Publier un Travail
-            </a>
-        </div>
-    </nav>
-
-    <header class="py-10 bg-white border-b shadow-sm">
-        <div class="container mx-auto text-center px-4">
-            <h2 class="text-3xl font-extrabold text-gray-800">Bibliothèque Numérique des TFC</h2>
-            <p class="text-gray-600 mt-2">Université de Malemba Nkulu & RDC</p>
-            
-            <div class="mt-8 max-w-xl mx-auto">
-                <input type="text" placeholder="Rechercher par titre, auteur ou année..." 
-                       class="w-full p-4 border border-gray-300 rounded-full shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-        </div>
+    <header class="bg-blue-900 text-white py-12 px-6 shadow-2xl text-center">
+        <h1 class="text-4xl font-black mb-2 tracking-tighter uppercase">Bibliothèque Numérique</h1>
+        <p class="text-blue-300 font-medium">Répertoire des Travaux - Université de Malemba Nkulu</p>
     </header>
 
-    <main class="container mx-auto py-10 px-4">
-        <div class="flex justify-between items-center mb-8">
-            <h3 class="text-2xl font-bold text-gray-700">Dernières Publications</h3>
-            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full uppercase">Nouveau</span>
-        </div>
+    <main class="container mx-auto px-4 -mt-8 pb-20">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl transition duration-300">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded uppercase">Licence</span>
-                    <span class="text-gray-400 text-xs">2023-2024</span>
-                </div>
-                <h4 class="text-lg font-bold text-gray-900 leading-tight">Optimisation des réseaux VSAT en milieu rural : Cas de Malemba Nkulu</h4>
-                <p class="text-sm text-gray-600 mt-3 font-medium">Auteur : Fortune Mukumbi</p>
-                <p class="text-xs text-gray-400 mt-1 italic">Université de Malemba Nkulu</p>
-                
-                <div class="mt-6 pt-4 border-t border-gray-100">
-                    <button class="w-full bg-gray-50 text-blue-700 font-bold py-2 rounded-lg hover:bg-blue-700 hover:text-white transition duration-300">
-                        Lire le document PDF
-                    </button>
-                </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-10 flex flex-col md:flex-row gap-4 items-center border border-gray-100">
+            <div class="flex-1 w-full">
+                <input type="text" id="searchInput" onkeyup="filtrerTravaux()" placeholder="🔍 Rechercher un auteur ou un titre..." class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-blue-500 outline-none transition-all">
             </div>
+            <div class="bg-blue-50 px-6 py-4 rounded-xl text-center min-w-[120px]">
+                <span id="compteur" class="block text-2xl font-black text-blue-700">0</span>
+                <span class="text-[10px] font-bold text-blue-400 uppercase">Documents</span>
+            </div>
+            <a href="Publier.html" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-black transition-all shadow-lg text-center">
+                + PUBLIER UN TFC
+            </a>
+        </div>
 
-            </div>
+        <div id="loading" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent"></div>
+            <p class="text-gray-500 mt-4 font-medium">Chargement des archives...</p>
+        </div>
+
+        <div id="listeTravaux" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </main>
 
-    <footer class="mt-20 py-10 bg-gray-900 text-white text-center">
-        <p class="text-sm opacity-75">© 2026 - Plateforme Académique Digitale</p>
-        <p class="text-xs mt-2 text-blue-400 font-medium italic">République Démocratique du Congo</p>
-    </footer>
+    <script>
+        const SUPABASE_URL = 'https://vajretqggbgehbvkzapb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_lGdsTIODDJVwqQSSJzK9Ng_QtzCpvxl';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let TOUS_LES_TRAVAUX = [];
 
+        async function chargerTravaux() {
+            const { data, error } = await supabase.from('travaux').select('*').order('created_at', { ascending: false });
+            document.getElementById('loading').classList.add('hidden');
+            
+            if (data) {
+                TOUS_LES_TRAVAUX = data;
+                document.getElementById('compteur').innerText = data.length;
+                afficherCartes(data);
+            }
+        }
+
+        function afficherCartes(liste) {
+            const container = document.getElementById('listeTravaux');
+            container.innerHTML = '';
+            
+            if(liste.length === 0) {
+                container.innerHTML = '<p class="col-span-full text-center text-gray-400 italic py-10">Aucun travail trouvé.</p>';
+                return;
+            }
+
+            liste.forEach(tfc => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-2xl shadow-sm border border-gray-100 card-item flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold uppercase mb-3 inline-block">PDF Officiel</span>
+                        <h3 class="font-black text-gray-800 text-lg leading-tight uppercase mb-2">${tfc.titre}</h3>
+                        <p class="text-gray-500 text-sm mb-6">Par <span class="font-bold text-gray-700">${tfc.auteur}</span></p>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <a href="${tfc.pdf_url}" target="_blank" class="flex-1 text-center bg-gray-900 text-white text-[11px] font-bold py-3 rounded-xl hover:bg-blue-600 transition-all">
+                            👁️ LIRE
+                        </a>
+                        <a href="${tfc.pdf_url}" download="${tfc.titre}.pdf" class="flex-1 text-center bg-blue-50 text-blue-700 text-[11px] font-bold py-3 rounded-xl hover:bg-blue-100 transition-all border border-blue-200">
+                            📥 TÉLÉCHARGER
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filtrerTravaux() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultats = TOUS_LES_TRAVAUX.filter(t => 
+                t.titre.toLowerCase().includes(query) || t.auteur.toLowerCase().includes(query)
+            );
+            afficherCartes(resultats);
+        }
+
+        chargerTravaux();
+    </script>
 </body>
 </html>
