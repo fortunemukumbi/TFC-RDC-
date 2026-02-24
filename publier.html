@@ -3,68 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Publier un Travail - TFC RDC</title>
+    <title>Publier - UNIMALEMBA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
 
-    <div class="p-4">
-        <a href="index.html" class="text-blue-600 font-semibold flex items-center">
-            ← Retour à la bibliothèque
-        </a>
+    <div id="mainCard" class="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 animate__animated animate__fadeIn">
+        <h2 class="text-3xl font-black text-blue-900 mb-1 text-center uppercase tracking-tighter">Archivage</h2>
+        <p class="text-xs text-center text-gray-400 mb-8 uppercase font-bold tracking-widest">Université de Malemba</p>
+        
+        <form id="tfcForm" class="space-y-5">
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Nom de l'étudiant</label>
+                <input type="text" id="auteur" placeholder="Ex: Patient Kapinga" required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Titre du TFC</label>
+                <input type="text" id="titre" placeholder="Ex: La gestion des mines..." required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all">
+            </div>
+            
+            <div class="border-2 border-dashed border-blue-200 p-6 rounded-2xl bg-blue-50 hover:bg-blue-100 transition-all cursor-pointer relative text-center">
+                <input type="file" id="fileInput" accept=".pdf" required class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <p id="fileNameDisplay" class="text-blue-600 font-bold text-sm">📁 Cliquez pour choisir le PDF</p>
+                <p class="text-[10px] text-blue-400 mt-1 uppercase">PDF uniquement (Max 15MB)</p>
+            </div>
+
+            <div id="progressBox" class="hidden space-y-2">
+                <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div id="progressBar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="statusLabel" class="text-center text-[10px] font-black text-blue-600 uppercase animate-pulse">Traitement en cours...</p>
+            </div>
+
+            <button type="submit" id="btnEnvoyer" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-blue-700 transition-all transform active:scale-95">
+                🚀 PUBLIER MAINTENANT
+            </button>
+        </form>
     </div>
 
-    <main class="container mx-auto max-w-2xl px-4 py-8">
-        <div class="bg-white shadow-xl rounded-2xl p-8">
-            <h2 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Soumettre votre travail</h2>
-            
-            <form id="tfcForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Nom et Postnom de l'auteur</label>
-                    <input type="text" required class="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Titre complet du TFC / Mémoire</label>
-                    <input type="text" required class="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Université / Institution</label>
-                    <input type="text" value="Université de Malemba Nkulu" required class="mt-1 block w-full p-3 border border-gray-300 bg-gray-50 rounded-md">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Niveau d'étude</label>
-                        <select class="mt-1 block w-full p-3 border border-gray-300 rounded-md">
-                            <option>Licence</option>
-                            <option>Master</option>
-                            <option>Doctorat</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Année Académique</label>
-                        <input type="text" placeholder="Ex: 2024-2025" class="mt-1 block w-full p-3 border border-gray-300 rounded-md">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Résumé (Abstract)</label>
-                    <textarea rows="4" class="mt-1 block w-full p-3 border border-gray-300 rounded-md" placeholder="De quoi parle votre recherche ?"></textarea>
-                </div>
-
-                <div class="bg-blue-50 p-4 border-2 border-dashed border-blue-200 rounded-lg text-center">
-                    <label class="block text-sm font-medium text-blue-800 mb-2">Charger le document (PDF)</label>
-                    <input type="file" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
-                </div>
-
-                <button type="submit" class="w-full bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-900 transition duration-300">
-                    🚀 Envoyer pour validation
-                </button>
-            </form>
+    <div id="successModal" class="hidden fixed inset-0 bg-blue-900/90 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-[40px] p-10 max-w-sm w-full text-center animate__animated animate__zoomIn">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">✅</div>
+            <h3 class="text-2xl font-black text-gray-800 mb-2">C'est en ligne !</h3>
+            <p class="text-gray-500 mb-8 text-sm">Le travail a été archivé avec succès dans la bibliothèque numérique.</p>
+            <button onclick="window.location.href='index.html'" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg">
+                🔎 VOIR MON TRAVAIL
+            </button>
         </div>
-    </main>
+    </div>
 
+    <script>
+        const SUPABASE_URL = 'https://vajretqggbgehbvkzapb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_lGdsTIODDJVwqQSSJzK9Ng_QtzCpvxl';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const name = e.target.files[0]?.name || "Fichier sélectionné";
+            document.getElementById('fileNameDisplay').innerText = "📄 " + name;
+        });
+
+        document.getElementById('tfcForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const file = document.getElementById('fileInput').files[0];
+            const auteur = document.getElementById('auteur').value;
+            const titre = document.getElementById('titre').value;
+            const btn = document.getElementById('btnEnvoyer');
+            const pBox = document.getElementById('progressBox');
+            const pBar = document.getElementById('progressBar');
+            const pLabel = document.getElementById('statusLabel');
+
+            if (file.type !== "application/pdf") return alert("Seulement les PDF !");
+            if (file.size > 15 * 1024 * 1024) return alert("Fichier trop lourd (Max 15MB)");
+
+            btn.classList.add('hidden');
+            pBox.classList.remove('hidden');
+
+            const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            
+            pBar.style.width = "30%";
+            const { data: upData, error: upErr } = await supabase.storage.from('tfc_docs').upload(fileName, file);
+            
+            if (upErr) { alert("Erreur Storage: " + upErr.message); location.reload(); return; }
+
+            pBar.style.width = "70%";
+            pLabel.innerText = "Enregistrement dans la base...";
+            const { data: urlData } = supabase.storage.from('tfc_docs').getPublicUrl(fileName);
+
+            const { error: dbErr } = await supabase.from('travaux').insert([
+                { auteur, titre, universite: "UNIMALEMBA", pdf_url: urlData.publicUrl }
+            ]);
+
+            if (dbErr) {
+                alert("Erreur DB: " + dbErr.message);
+                btn.classList.remove('hidden');
+            } else {
+                pBar.style.width = "100%";
+                document.getElementById('successModal').classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
